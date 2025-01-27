@@ -13,7 +13,7 @@ from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_auc_score, roc_curve
 from torch.nn.functional import sigmoid
-from cgan import Discriminator, Generator  # cgan.py包含了Generator和Discriminator类定义
+from cgan import Discriminator, Generator 
 import torch.nn.functional as F
 from axial import  *
 
