@@ -2,11 +2,21 @@
 
 This repository is the official implementation of CGAN-SAE.
 
-## Requirements
+## Environment Setup
 
-To install requirements:
+To ensure the code runs correctly, we provide an `environment.yml` file to create a reproducible Conda environment. Please follow the steps below to set up the environment.
 
-`pip install -r requirements.txt`
+### 1. Install Conda
+
+First, make sure you have [Miniconda](https://docs.conda.io/en/latest/miniconda.html) or [Anaconda](https://www.anaconda.com/products/distribution) installed. Miniconda is recommended.
+
+### 2. Create the Conda Environment
+
+After cloning this repository, run the following command in the project root directory:
+
+`conda env create -f environment.yml`
+
+This command will automatically create a Conda environment named cgan-sae_env and install all required dependencies as specified in the environment.yml file.
 
 ## Data
 
@@ -21,9 +31,9 @@ The data preprocessing and cleaning procedures follow those described in the ori
 
 ## src
 
-All model implementations, including the proposed method and baseline models, are located in the `src` directory. The default dataset is the **rice dataset**; to switch to another dataset or use your own, please modify the data path accordingly in the script.
+All model implementations, including the proposed method and baseline models, are located in the `src` directory. The default dataset is the rice dataset; to switch to another dataset , please modify the data path accordingly in the script.
 
-The code can be executed in **PyCharm** after installing the required dependencies. Ensure that:
+The code can be executed in PyCharm after installing the required dependencies. Ensure that:
 
 - The correct Python interpreter (with all dependencies installed) is selected in PyCharm.
 - The dataset path in the code points to your local `.csv` files.

@@ -2,6 +2,8 @@ import pandas as pd
 import torch
 from sklearn.ensemble import RandomForestClassifier
 import torch.nn as nn
+
+from sklearn.utils import shuffle
 import torch.optim as optim
 import numpy as np
 from sklearn.preprocessing import StandardScaler
@@ -22,14 +24,19 @@ np.random.seed(SEED)
 torch.manual_seed(SEED)
 if torch.cuda.is_available():
     torch.cuda.manual_seed_all(SEED)
-
-file_path = '../../data/tall.csv'
+type=0
+file_path = '../data/tall.csv'
 df = pd.read_csv(file_path)
-
+if "tall.csv" not in file_path:
+    type=1
 
 features = df.iloc[:, 1:]
 labels = df.iloc[:, 0]
 feature_names = features.columns.tolist()
+if type==1:
+    features = df.iloc[:, 1:-2]
+    labels = df.iloc[:, 0]
+    feature_names = features.columns.tolist()
 
 
 print("Features:")
@@ -45,12 +52,17 @@ features_scaled = scaler.fit_transform(features)
 train_indices=[2, 3, 5, 4]
 test_indices=[0, 1]
 
-
 X_train = features_scaled[train_indices]
 y_train = labels.iloc[train_indices]
 
 X_test = features_scaled[test_indices]
 y_test = labels.iloc[test_indices]
+
+if "tall.csv" not in file_path:
+    type=1
+    X_train, X_test, y_train, y_test = train_test_split(features_scaled, labels, test_size=0.2, random_state=42,
+                                                        stratify=labels)
+
 print("Training set:")
 print(y_train)
 print("Test set:")
@@ -70,8 +82,10 @@ opt = {
     'latent_dim': 50,
     'n_classes': 2,
     'img_shape': (1, 30)
-}
 
+}
+if type == 1:
+    opt['img_shape'] = (1, 15260)
 
 generator = Generator(opt['latent_dim'], opt['n_classes'], opt['img_shape']).to(device)
 discriminator = Discriminator(opt['n_classes'], opt['img_shape']).to(device)
@@ -119,9 +133,9 @@ for epoch in range(num_epochs):
         d_loss.backward()
         optimizer_D.step()
 
-
-        print("[Epoch %d/%d] [Batch %d/%d] [D loss: %f] [G loss: %f]" %
-             (epoch, num_epochs, i, len(train_loader), d_loss.item(), g_loss.item()))
+        if epoch%20==0:
+            print("[Epoch %d/%d] [Batch %d/%d] [D loss: %f] [G loss: %f]" %
+                 (epoch, num_epochs, i, len(train_loader), d_loss.item(), g_loss.item()))
 
 
 def generate_samples(generator, n_samples, latent_dim, n_classes, device):
@@ -206,6 +220,9 @@ class SparseAutoencoder(nn.Module):
 
 input_size = 30
 hidden_size = 30
+if type==1:
+    input_size = 15260
+    hidden_size = 15260
 sparsity_ratio = 0.01
 
 sparse_autoencoder = SparseAutoencoder(input_size, hidden_size, sparsity_ratio).to(device)
@@ -343,7 +360,7 @@ plt.scatter(pca_features[:, 0], pca_features[:, 1])
 plt.title('PCA of Encoded Features')
 plt.xlabel('Principal Component 1')
 plt.ylabel('Principal Component 2')
-plt.show()
+#plt.show()
 
 
 
