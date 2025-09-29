@@ -72,7 +72,7 @@ if torch.cuda.is_available():
     torch.cuda.manual_seed_all(SEED)
 
 
-file_path = '../../data/tall.csv'
+file_path = '../data/tall.csv'
 df = pd.read_csv(file_path)
 
 
